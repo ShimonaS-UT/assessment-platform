@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "question": "Write a program to check whether a given number is even or odd.",
+    "test_cases": [
+      {"input": "4", "expected_output": "Even"},
+      {"input": "7", "expected_output": "Odd"}
+    ]
+  },
+  {
+    "id": 2,
+    "question": "Write a program to find the factorial of a given number.",
+    "test_cases": [
+      {"input": "5", "expected_output": "120"},
+      {"input": "0", "expected_output": "1"}
+    ]
+  },
+  {
+    "id": 3,
+    "question": "Write a program to reverse a given string.",
+    "test_cases": [
+      {"input": "hello", "expected_output": "olleh"},
+      {"input": "world", "expected_output": "dlrow"}
+    ]
+  }
+]

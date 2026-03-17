@@ -1,0 +1,15 @@
+EmployeeID,FirstName,LastName,StoreID,HireDate,Position,ManagerID
+501,Emily,Johnson,401,10-01-2022,Sales Associate,509
+502,Robert,Lee,401,23-11-2021,Manager,
+503,Anjali,Mehta,402,05-02-2023,Sales Associate,509
+504,Carlos,Ruiz,403,01-06-2022,Sales Associate,509
+506,Sarah,Miller,401,15-01-2022,Sales Associate,514
+507,James,Brown,402,10-05-2021,Store Manager,502
+508,Patricia,Wilson,403,20-03-2023,Cashier,514
+509,Michael,Moore,401,05-11-2020,Sales Associate,514
+510,Linda,Taylor,402,12-08-2019,Sales Manager,502
+511,Robert,Anderson,403,25-02-2023,Inventory Specialist,
+512,Jessica,Thomas,401,18-07-2021,Sales Associate,514
+513,David,Jackson,402,30-10-2022,Cashier,514
+514,Susan,White,403,15-04-2020,Store Manager,502
+515,Daniel,Harris,401,01-12-2019,Sales Associate,514

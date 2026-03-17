@@ -1,0 +1,107 @@
+/* static/style.css */
+
+/* Body style */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f7f7f7;
+}
+
+/* Header */
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+/* Tabs */
+.tab {
+    cursor: pointer;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #ddd;
+    margin-right: 5px;
+    border-radius: 5px 5px 0 0;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.tab.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.tab:hover {
+    background-color: #999;
+    color: white;
+}
+
+/* Tab content */
+.tab-content {
+    display: none;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 5px 5px 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Forms */
+form {
+    margin-top: 10px;
+}
+
+form p {
+    font-weight: bold;
+}
+
+textarea {
+    width: 100%;
+    font-family: monospace;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    resize: vertical;
+}
+
+input[type="radio"] {
+    margin-right: 10px;
+}
+
+/* Buttons */
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Output box for coding section */
+#output {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #fafafa;
+    white-space: pre-wrap;
+    border-radius: 5px;
+    font-family: monospace;
+}
+
+/* Select dropdown */
+select {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Results</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+<style>
+body {
+    background: #f4f6f9;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+.ui.container {
+    margin-top: 50px;
+    padding: 25px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+h2.ui.header {
+    color: #1b1c1d;
+    margin-bottom: 25px;
+}
+.ui.table th {
+    background-color: #2185d0 !important;
+    color: #fff !important;
+    text-align: center;
+}
+.ui.table td {
+    text-align: center;
+    font-weight: 500;
+}
+.ui.button {
+    margin-top: 20px;
+    background-color: #21ba45;
+    color: #fff;
+}
+.ui.button:hover {
+    background-color: #16ab39;
+    color: #fff;
+}
+</style>
+</head>
+
+<body>
+<div class="ui container">
+
+    <h2 class="ui header"><i class="trophy icon"></i> Your Results</h2>
+
+    <table class="ui celled table">
+        <thead>
+            <tr>
+                <th>Assessment</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in results %}
+            <tr>
+                <td>{{ r[0] }}</td>
+                <td>{{ r[1] }}/{{ r[2] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ url_for('dashboard') }}" class="ui button"><i class="arrow left icon"></i> Back</a>
+
+</div>
+</body>
+</html>

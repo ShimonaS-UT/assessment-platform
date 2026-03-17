@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+
+<style>
+
+body{
+    margin:0;
+    height:100vh;
+    background: linear-gradient(135deg,#6a11cb,#2575fc);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:"Segoe UI",Arial,sans-serif;
+}
+
+/* login card */
+.login-card{
+    width:400px;
+    padding:40px;
+    border-radius:10px;
+}
+
+/* title spacing */
+.login-card h2{
+    margin-bottom:25px;
+}
+
+/* signup text */
+.signup{
+    margin-top:20px;
+    text-align:center;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="ui raised very padded segment login-card">
+
+<h2 class="ui center aligned header">Login</h2>
+
+<form class="ui form" method="POST" action="{{ url_for('login') }}">
+
+<div class="field">
+<label>Username</label>
+<input type="text" name="username" required>
+</div>
+
+<div class="field">
+<label>Password</label>
+<input type="password" name="password" required>
+</div>
+
+<button class="ui fluid large blue button" type="submit">
+Login
+</button>
+
+</form>
+
+<div class="signup">
+
+<p>
+New User?
+<a href="{{ url_for('signup') }}">Signup</a>
+</p>
+
+</div>
+
+</div>
+
+</body>
+</html>

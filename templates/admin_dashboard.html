@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+
+<style>
+
+body{
+    background: linear-gradient(135deg,#f5f7fa,#e4ecf5);
+    font-family:"Segoe UI",Arial,sans-serif;
+}
+
+/* header spacing */
+.header-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:30px;
+}
+
+/* table styling */
+.ui.table input{
+    width:90px;
+}
+
+/* card style container */
+.dashboard-card{
+    padding:30px;
+    margin-top:20px;
+}
+
+/* section header */
+.section-title{
+    margin-top:30px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="ui container">
+
+<div class="header-bar">
+
+<h2 class="ui header">
+<i class="settings icon"></i>
+<div class="content">
+Admin Dashboard
+<div class="sub header">Manage user assessment attempts</div>
+</div>
+</h2>
+
+<a href="{{ url_for('logout') }}" class="ui red button">
+<i class="sign-out icon"></i>
+Logout
+</a>
+
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+
+<div class="ui {{ category }} message">
+<i class="close icon"></i>
+<div class="header">
+Notification
+</div>
+<p>{{ message }}</p>
+</div>
+
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="ui raised segment dashboard-card">
+
+<h3 class="ui dividing header section-title">
+<i class="tasks icon"></i>
+Assign Assessments to Users
+</h3>
+
+<table class="ui celled striped table">
+
+<thead>
+<tr>
+<th>User</th>
+<th>MCQ Attempts</th>
+<th>SQL Attempts</th>
+<th>Coding Attempts</th>
+<th>Assign</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for u in users %}
+
+<tr>
+
+<form action="{{ url_for('assign') }}" method="POST">
+
+<td>
+<strong>{{ u["username"] }}</strong>
+<input type="hidden" name="user_id" value="{{ u['id'] }}">
+</td>
+
+<td>
+<input type="number" class="ui input" name="mcq" min="0" value="{{ u['mcq'] or 0 }}">
+</td>
+
+<td>
+<input type="number" class="ui input" name="sql" min="0" value="{{ u['sql'] or 0 }}">
+</td>
+
+<td>
+<input type="number" class="ui input" name="coding" min="0" value="{{ u['coding'] or 0 }}">
+</td>
+
+<td>
+<button class="ui green button">
+<i class="check icon"></i>
+Assign
+</button>
+</td>
+
+</form>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</body>
+</html>

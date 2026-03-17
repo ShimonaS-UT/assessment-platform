@@ -1,0 +1,88 @@
+[
+  {
+    "id": 1,
+    "question": "Write a SQL query to retrieve all employees who work in StoreID 401.",
+    "expected_result": [
+      ["501", "Emily", "Johnson"],
+      ["502", "Robert", "Lee"],
+      ["506", "Sarah", "Miller"],
+      ["509", "Michael", "Moore"],
+      ["512", "Jessica", "Thomas"],
+      ["515", "Daniel", "Harris"]
+    ]
+  },
+  {
+    "id": 2,
+    "question": "Write a SQL query to find all employees hired after 01-01-2022.",
+    "expected_result": [
+      ["501", "10-01-2022"],
+      ["503", "05-02-2023"],
+      ["508", "20-03-2023"],
+      ["511", "25-02-2023"],
+      ["513", "30-10-2022"]
+    ]
+  },
+  {
+    "id": 3,
+    "question": "Write a SQL query to count the number of employees in each StoreID.",
+    "expected_result": [
+      ["401", "6"],
+      ["402", "4"],
+      ["403", "4"]
+    ]
+  },
+  {
+    "id": 4,
+    "question": "Write a SQL query to list employees who do not have a ManagerID.",
+    "expected_result": [
+      ["502", "Robert", "Lee"],
+      ["511", "Robert", "Anderson"]
+    ]
+  },
+  {
+    "id": 5,
+    "question": "Write a SQL query to retrieve employees along with their manager names.",
+    "expected_result": [
+      ["Emily Johnson", "Michael Moore"],
+      ["Anjali Mehta", "Michael Moore"],
+      ["Carlos Ruiz", "Michael Moore"],
+      ["Sarah Miller", "Susan White"],
+      ["James Brown", "Robert Lee"],
+      ["Patricia Wilson", "Susan White"],
+      ["Michael Moore", "Susan White"],
+      ["Linda Taylor", "Robert Lee"],
+      ["Jessica Thomas", "Susan White"],
+      ["David Jackson", "Susan White"],
+      ["Susan White", "Robert Lee"],
+      ["Daniel Harris", "Susan White"]
+    ]
+  },
+  {
+    "id": 6,
+    "question": "Write a SQL query to find the earliest hired employee.",
+    "expected_result": [
+      ["515", "Daniel", "Harris", "01-12-2019"]
+    ]
+  },
+  {
+    "id": 7,
+    "question": "Write a SQL query to list all distinct positions.",
+    "expected_result": [
+      ["Sales Associate"],
+      ["Manager"],
+      ["Store Manager"],
+      ["Cashier"],
+      ["Sales Manager"],
+      ["Inventory Specialist"]
+    ]
+  },
+  {
+    "id": 8,
+    "question": "Write a SQL query to count employees reporting to each ManagerID.",
+    "expected_result": [
+      ["502", "3"],
+      ["509", "3"],
+      ["514", "6"]
+    ]
+  }
+]

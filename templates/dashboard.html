@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>User Dashboard</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+
+<style>
+
+body{
+    background: linear-gradient(135deg,#f5f7fa,#e4ecf5);
+    font-family:"Segoe UI", Arial, sans-serif;
+}
+
+.container{
+    margin-top:40px;
+}
+
+/* header layout */
+.header-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+/* table card */
+.dashboard-card{
+    padding:25px;
+}
+
+/* result button spacing */
+.result-btn{
+    margin-top:20px;
+}
+
+/* status colors */
+.status-completed{
+    color:green;
+    font-weight:bold;
+}
+
+.status-pending{
+    color:orange;
+    font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="ui container">
+
+<div class="header-bar">
+
+<h2 class="ui header">
+<i class="user circle icon"></i>
+<div class="content">
+Welcome, {{ session.get('username', 'User') }}!
+<div class="sub header">Your assessment dashboard</div>
+</div>
+</h2>
+
+<a href="{{ url_for('logout') }}" class="ui red button">
+<i class="sign-out icon"></i>
+Logout
+</a>
+
+</div>
+
+<div class="ui raised segment dashboard-card">
+
+<h3 class="ui dividing header">
+<i class="tasks icon"></i>
+Your Assessments
+</h3>
+
+<table class="ui celled striped table">
+
+<thead>
+<tr>
+<th>Assessment</th>
+<th>Status</th>
+<th>Score</th>
+<th>Attempts</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for key in ['mcq','sql','coding'] %}
+
+{% set p = progress.get(key, {'completed': 0, 'score': 0, 'attempts': 0, 'max_attempts': assigned.get(key,0)}) %}
+{% set a = assigned.get(key,0) %}
+
+<tr>
+
+<td>
+<strong>{{ key|upper }}</strong>
+</td>
+
+<td>
+
+{% if p.completed %} <span class="status-completed">Completed</span>
+{% else %} <span class="status-pending">Pending</span>
+{% endif %}
+
+</td>
+
+<td>{{ p.score }}</td>
+
+<td>
+<div class="ui small label">
+{{ p.attempts }}/{{ p.max_attempts }}
+</div>
+</td>
+
+<td>
+
+{% if a > 0 and p.attempts < p.max_attempts and not p.completed %}
+
+<a href="{{ url_for(key) }}" class="ui primary button">
+<i class="play icon"></i>
+Start
+</a>
+
+{% else %}
+
+<button class="ui disabled button">
+Start
+</button>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+<div class="result-btn">
+
+<a href="{{ url_for('final_submit') }}" class="ui green large button">
+<i class="check circle icon"></i>
+Submit All & View Results
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>

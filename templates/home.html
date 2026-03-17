@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Home - Assessment</title>
+</head>
+<body>
+
+<h1>Welcome to the Assessment Platform</h1>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Home - Assessment</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+
+<style>
+
+body{
+    margin:0;
+    background: linear-gradient(135deg,#f5f7fa,#e4ecf5);
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* Top navigation bar */
+.topbar{
+    padding:15px 30px;
+}
+
+/* center layout */
+.main-container{
+    height:80vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* main card */
+.home-card{
+    width:520px;
+    padding:40px;
+    text-align:center;
+}
+
+/* title */
+.home-card h1{
+    margin-bottom:20px;
+}
+
+/* spacing */
+.links a{
+    margin:10px;
+}
+
+.footer{
+    text-align:center;
+    padding:15px;
+    color:#777;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- Navigation Bar -->
+
+<div class="ui menu topbar">
+
+<div class="header item">
+Assessment Platform
+</div>
+
+<div class="right menu">
+
+{% if session.get('role') == 'admin' %}
+
+<a class="item" href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a> <a class="item" href="{{ url_for('logout') }}">Logout</a>
+
+{% elif session.get('role') == 'user' %}
+
+<a class="item" href="{{ url_for('dashboard') }}">Dashboard</a> <a class="item" href="{{ url_for('logout') }}">Logout</a>
+
+{% else %}
+
+<a class="item" href="{{ url_for('login') }}">Login</a> <a class="item" href="{{ url_for('signup') }}">Signup</a>
+
+{% endif %}
+
+</div>
+
+</div>
+
+<!-- Main Content -->
+
+<div class="ui container main-container">
+
+<div class="ui raised very padded text container segment home-card">
+
+<h1 class="ui header">Welcome to the Assessment Platform</h1>
+
+<p>
+Practice MCQ, SQL, and Coding assessments in a structured environment.
+</p>
+
+{% if session.get('role') == 'admin' %}
+
+<div class="links">
+
+<p>
+<a class="ui primary large button" href="{{ url_for('admin_dashboard') }}">
+Admin Dashboard
+</a>
+</p>
+
+<p>
+<a class="ui red basic button" href="{{ url_for('logout') }}">
+Logout
+</a>
+</p>
+
+</div>
+
+{% elif session.get('role') == 'user' %}
+
+<div class="links">
+
+<p>
+<a class="ui green large button" href="{{ url_for('dashboard') }}">
+Go to Your Assessment Dashboard
+</a>
+</p>
+
+<p>
+<a class="ui red basic button" href="{{ url_for('logout') }}">
+Logout
+</a>
+</p>
+
+</div>
+
+{% else %}
+
+<div class="links">
+
+<p>
+<a class="ui blue large button" href="{{ url_for('login') }}">
+Login
+</a>
+
+<a class="ui teal large button" href="{{ url_for('signup') }}">
+Signup
+</a>
+</p>
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+<div class="footer">
+© 2026 Assessment Platform
+</div>
+
+</body>
+</html>
+
+
+</body>
+</html>

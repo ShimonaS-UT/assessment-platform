@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "question": "What will be the output of the following code?\n\nint x = 5;\nint y = x++ + ++x;\nSystem.out.println(y);",
+    "options": ["10","11","12","13"],
+    "answer": "13"
+  },
+  {
+    "id": 2,
+    "question": "How many times will the loop execute?\n\nfor(int i = 1; i <= 10; i *= 2) {\n   // statement\n}",
+    "options":["2","3","4","5"],
+    "answer": "4"
+  },
+  {
+    "id": 3,
+    "question": "What will be the output?\n\nint a = 10;\nif(a > 5)\n    if(a < 8)\n        System.out.println(\"A\");\n    else\n        System.out.println(\"B\");",
+    "options": ["A","B","No Output","Compilation Error"],
+    "answer": "B"
+  },
+  {
+    "id": 4,
+    "question": "What is the time complexity of binary search?",
+    "options": ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
+    "answer": "O(log n)"
+  },
+  {
+    "id": 5,
+    "question": "If a function calls itself repeatedly without a base condition, what will happen?",
+    "options": ["The program runs successfully", "Infinite loop but no error", "Stack overflow error", "Compilation error"],
+    "answer": "Stack overflow error"
+  },
+  {
+    "id": 6,
+    "question": "Which data structure uses FIFO (First In First Out)?",
+    "options": ["Stack", "Queue", "Tree", "Graph"],
+    "answer": "Queue"
+  },
+  {
+    "id": 7,
+    "question": "What will be the output?\n\nint sum = 0;\nfor(int i = 1; i <= 3; i++) {\n   sum += i;\n}\nSystem.out.println(sum);",
+    "options": ["3", "6", "9", "1"],
+    "answer": "6"
+  },
+  {
+    "id": 8,
+    "question": "Which sorting algorithm has the best average-case time complexity?",
+    "options": ["Bubble Sort", "Selection Sort", "Merge Sort", "Insertion Sort"],
+    "answer": "Merge Sort"
+  }
+]
