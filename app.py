@@ -1,5 +1,6 @@
 from flask import Flask, flash, render_template, request, jsonify, redirect, url_for, session
 import sqlite3, json, csv, subprocess, tempfile, sys, os
+import re
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_FILE = os.path.join(BASE_DIR, "assessment.db")
@@ -187,7 +188,8 @@ def login():
 
         user = get_user_from_db(username, password)
         if not user:
-            return "Invalid login", 401
+            flash("Invalid username or password", "error")
+            return redirect(url_for('login'))
 
         # Save user info in session
         session['user_id'] = user.id
@@ -204,6 +206,10 @@ def login():
 # SIGNUP
 # -----------------------
 
+
+
+EMAIL_REGEX = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+
 @app.route("/signup", methods=["GET","POST"])
 def signup():
 
@@ -212,29 +218,32 @@ def signup():
         username = request.form["username"]
         password = request.form["password"]
 
+        # ✅ Validate email format
+        if not re.match(EMAIL_REGEX, username):
+            flash("Please enter a valid email address", "error")
+            return redirect(url_for("signup"))
+
         conn = get_db_connection()
         cur = conn.cursor()
 
         try:
-            # Always assign role 'user' for signup
             cur.execute(
                 "INSERT INTO users(username,password,role) VALUES(?,?,?)",
-                (username, password, "user")  # <-- force role as 'user'
+                (username, password, "user")
             )
 
             user_id = cur.lastrowid
-
-            # Initialize assignments for this user
             cur.execute("INSERT INTO assignments(user_id) VALUES(?)", (user_id,))
-
             conn.commit()
 
         except sqlite3.IntegrityError:
-            return "Username already exists", 400
+            flash("Email already registered", "error")
+            return redirect(url_for("signup"))
 
         finally:
             conn.close()
 
+        flash("Signup successful! Please login.", "success")
         return redirect(url_for("login"))
 
     return render_template("signup.html")
@@ -796,11 +805,11 @@ if __name__ == "__main__":
         conn = get_db_connection()
         cur = conn.cursor()
 
-        cur.execute("SELECT * FROM users WHERE username='admin'")
+        cur.execute("SELECT * FROM users WHERE username='admin@xyz.com'")
 
         if not cur.fetchone():
             cur.execute("INSERT INTO users(username,password,role) VALUES(?,?,?)",
-                        ("admin", "admin123", "admin"))
+                        ("admin@xyz.com", "admin123", "admin"))
             admin_id = cur.lastrowid
             cur.execute("INSERT INTO assignments(user_id) VALUES(?)", (admin_id,))
             print("Admin created")
