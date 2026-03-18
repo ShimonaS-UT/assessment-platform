@@ -1,6 +1,11 @@
 from flask import Flask, flash, render_template, request, jsonify, redirect, url_for, session
 import sqlite3, json, csv, subprocess, tempfile, sys, os
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_FILE = os.path.join(BASE_DIR, "assessment.db")
+SAMPLE_SQL_DB = os.path.join(BASE_DIR, "sample_sql.db")
+EMPLOYEE_CSV = os.path.join(BASE_DIR, "Employee.csv")
+
 app = Flask(__name__)
 app.secret_key = "super_secret_key"
 
@@ -782,4 +787,26 @@ if __name__ == "__main__":
     conn.commit()
     conn.close()
 
-    app.run(debug=True)
+    import os
+
+    if __name__ == "__main__":
+
+        init_db()
+
+        conn = get_db_connection()
+        cur = conn.cursor()
+
+        cur.execute("SELECT * FROM users WHERE username='admin'")
+
+        if not cur.fetchone():
+            cur.execute("INSERT INTO users(username,password,role) VALUES(?,?,?)",
+                        ("admin", "admin123", "admin"))
+            admin_id = cur.lastrowid
+            cur.execute("INSERT INTO assignments(user_id) VALUES(?)", (admin_id,))
+            print("Admin created")
+
+        conn.commit()
+        conn.close()
+
+        port = int(os.environ.get("PORT", 5000))
+        app.run(host="0.0.0.0", port=port, debug=True)
