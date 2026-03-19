@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -10,32 +9,83 @@
 <style>
 
 body{
-    background: linear-gradient(135deg,#f5f7fa,#e4ecf5);
+    background: linear-gradient(135deg,#eef2f7,#d9e2ec);
     font-family:"Segoe UI",Arial,sans-serif;
 }
 
-/* header spacing */
-.header-bar{
+/* Top bar */
+.top-bar{
+    background:#ffffff;
+    padding:20px 30px;
+    border-radius:10px;
+    margin-top:30px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-top:30px;
 }
 
-/* table styling */
-.ui.table input{
-    width:90px;
+/* Title */
+.top-bar h2{
+    margin:0;
 }
 
-/* card style container */
+/* Buttons group */
+.action-buttons a{
+    margin-left:10px;
+}
+
+/* Card container */
 .dashboard-card{
     padding:30px;
-    margin-top:20px;
+    margin-top:25px;
+    border-radius:10px;
+    box-shadow:0 6px 16px rgba(0,0,0,0.08);
 }
 
-/* section header */
+/* Section title */
 .section-title{
-    margin-top:30px;
+    margin-bottom:20px;
+}
+
+/* Table improvements */
+.ui.table{
+    border-radius:8px;
+    overflow:hidden;
+}
+
+.ui.table thead th{
+    background:#f4f6f9;
+    font-weight:600;
+}
+
+.ui.table tbody tr:hover{
+    background:#f9fbfd;
+}
+
+/* Inputs */
+.ui.table input{
+    width:80px;
+    text-align:center;
+}
+
+/* Assign button */
+.assign-btn{
+    min-width:110px;
+}
+
+/* Flash messages */
+.ui.message{
+    border-radius:8px;
+}
+
+/* Responsive */
+@media (max-width:768px){
+    .top-bar{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:15px;
+    }
 }
 
 </style>
@@ -46,32 +96,39 @@ body{
 
 <div class="ui container">
 
-<div class="header-bar">
+<!-- TOP BAR -->
+<div class="top-bar">
 
 <h2 class="ui header">
-<i class="settings icon"></i>
+<i class="cogs icon"></i>
 <div class="content">
 Admin Dashboard
-<div class="sub header">Manage user assessment attempts</div>
+<div class="sub header">Manage user assessments and attempts</div>
 </div>
 </h2>
+
+<div class="action-buttons">
+<a class="ui teal button" href="{{ url_for('admin_results') }}">
+<i class="chart bar icon"></i>
+View Results
+</a>
 
 <a href="{{ url_for('logout') }}" class="ui red button">
 <i class="sign-out icon"></i>
 Logout
 </a>
+</div>
 
 </div>
 
+<!-- FLASH MESSAGES -->
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
 {% for category, message in messages %}
 
 <div class="ui {{ category }} message">
 <i class="close icon"></i>
-<div class="header">
-Notification
-</div>
+<div class="header">Notification</div>
 <p>{{ message }}</p>
 </div>
 
@@ -79,22 +136,23 @@ Notification
 {% endif %}
 {% endwith %}
 
-<div class="ui raised segment dashboard-card">
+<!-- MAIN CARD -->
+<div class="ui segment dashboard-card">
 
 <h3 class="ui dividing header section-title">
 <i class="tasks icon"></i>
-Assign Assessments to Users
+Assign Assessments
 </h3>
 
-<table class="ui celled striped table">
+<table class="ui celled table">
 
 <thead>
 <tr>
 <th>User</th>
-<th>MCQ Attempts</th>
-<th>SQL Attempts</th>
-<th>Coding Attempts</th>
-<th>Assign</th>
+<th>MCQ</th>
+<th>SQL</th>
+<th>Coding</th>
+<th class="center aligned">Action</th>
 </tr>
 </thead>
 
@@ -123,8 +181,8 @@ Assign Assessments to Users
 <input type="number" class="ui input" name="coding" min="0" value="{{ u['coding'] or 0 }}">
 </td>
 
-<td>
-<button class="ui green button">
+<td class="center aligned">
+<button class="ui green button assign-btn">
 <i class="check icon"></i>
 Assign
 </button>

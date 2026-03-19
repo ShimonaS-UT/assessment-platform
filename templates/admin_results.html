@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Users Results</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+</head>
+<body>
+<div class="ui container" style="margin-top:30px;">
+    <h2 class="ui header">All Users Assessment Results</h2>
+    <table class="ui celled table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>MCQ Score</th>
+                <th>SQL Score</th>
+                <th>Coding Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for username, data in results.items() %}
+            <tr>
+                <td>{{ username }}</td>
+                <td>{{ data.get('mcq', {}).get('score', 0) }}</td>
+                <td>{{ data.get('sql', {}).get('score', 0) }}</td>
+                <td>{{ data.get('coding', {}).get('score', 0) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="ui button orange" href="{{ url_for('admin_dashboard') }}">Back to Admin Dashboard</a>
+</div>
+</body>
+</html>

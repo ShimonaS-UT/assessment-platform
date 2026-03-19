@@ -294,6 +294,39 @@ def admin_dashboard():
 
     return render_template('admin_dashboard.html', users=users)
 
+@app.route('/admin_results')
+def admin_results():
+    # Only admins can access
+    if 'username' not in session or session.get('role') != 'admin':
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    # Fetch all users and their progress
+    cur.execute("""
+        SELECT u.username, p.assessment_type, p.score, p.attempts, p.completed
+        FROM users u
+        LEFT JOIN progress p ON u.id = p.user_id
+        WHERE u.role='user'
+        ORDER BY u.username
+    """)
+    rows = cur.fetchall()
+    conn.close()
+
+    # Transform data into a dictionary grouped by username
+    results = {}
+    for row in rows:
+        username = row['username']
+        if username not in results:
+            results[username] = {}
+        results[username][row['assessment_type']] = {
+            "score": row['score'],
+            "attempts": row['attempts'],
+            "completed": row['completed']
+        }
+
+    return render_template('admin_results.html', results=results)
 # -----------------------
 # ASSIGN ASSESSMENT
 # -----------------------
@@ -427,7 +460,16 @@ def sql():
 def run_sql():
 
     data = request.get_json()
-    query = data["query"]
+    query = data["query"].strip().lower()
+
+    # ❌ Block dangerous queries
+    forbidden = ["insert", "update", "delete", "drop", "alter", "truncate", "create"]
+
+    if any(word in query for word in forbidden):
+        return jsonify({"error": "Only SELECT queries are allowed!"})
+
+    if not query.startswith("select"):
+        return jsonify({"error": "Only SELECT queries are allowed!"})
 
     conn = sqlite3.connect(SAMPLE_SQL_DB)
     cur = conn.cursor()
@@ -435,7 +477,6 @@ def run_sql():
     try:
         cur.execute(query)
         rows = cur.fetchall()
-
         return jsonify({"output": rows})
 
     except Exception as e:
