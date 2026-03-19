@@ -240,12 +240,13 @@ $("#submit").click(submitSQL);
 document.addEventListener("visibilitychange", function() {
     if (!examSubmitted && document.hidden) {
         alert("You switched tabs! Your assessment will be locked and score reset.");
-       fetch("{{ url_for('tab_switch') }}", {
-    method: "POST",
-    credentials: "include"   // 🔥 REQUIRED FOR RENDER
-})
-.then(() => {
-    window.location = "{{ url_for('dashboard') }}";
+       fetch("{{ url_for('tab_switch') }}",{method:"POST"})
+
+        .then(()=>{
+
+            window.location="{{ url_for('dashboard') }}";
+
+        });
 });
     }
 });
