@@ -45,10 +45,21 @@ body{
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
-      <div class="ui negative message">
-        <div class="header">Error</div>
-        <p>{{ message }}</p>
-      </div>
+      {% if category == 'error' %}
+        <div class="ui negative message">
+          <div class="header">Error</div>
+          <p>{{ message }}</p>
+        </div>
+      {% elif category == 'success' %}
+        <div class="ui positive message">
+          <div class="header">Success</div>
+          <p>{{ message }}</p>
+        </div>
+      {% else %}
+        <div class="ui message">
+          <p>{{ message }}</p>
+        </div>
+      {% endif %}
     {% endfor %}
   {% endif %}
 {% endwith %}
@@ -61,10 +72,20 @@ body{
 </div>
 
 <div class="field">
-<label>Password</label>
-<input type="password" name="password" placeholder="Enter password" required autocomplete="new-password">
+  <label>Password</label>
+  <div class="ui right icon input">
+    <input type="password" id="password" name="password" placeholder="Enter password" required>
+    <i class="eye slash icon link" onclick="togglePassword('password', this)"></i>
+  </div>
 </div>
 
+<div class="field">
+  <label>Confirm Password</label>
+  <div class="ui right icon input">
+    <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm password" required>
+    <i class="eye slash icon link" onclick="togglePassword('confirm_password', this)"></i>
+  </div>
+</div>
 <button class="ui fluid large orange button" type="submit">
 Signup
 </button>
@@ -79,6 +100,18 @@ Already have an account?
 </div>
 
 </div>
+<script>
+function togglePassword(fieldId, icon) {
+    const input = document.getElementById(fieldId);
 
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("slash");
+    } else {
+        input.type = "password";
+        icon.classList.add("slash");
+    }
+}
+</script>
 </body>
 </html>

@@ -155,13 +155,31 @@ startTimer();
 /* ---------------- SHOW QUESTION ---------------- */
 function showQuestion(index){
   let q = questions[index];
+
   $("#sql-question").html(`<h3>Q${index+1}: ${q.question}</h3>`);
   $("#user-query").val(saved_answers[q.id] || "");
   $("#result-box").html("");
-  $("#prev").toggle(index>0);
-  $("#next").toggle(index<questions.length-1);
-  $("#validate").toggle(index==questions.length-1);
-  $("#submit").toggle(index==questions.length-1);
+
+  // Previous button
+  if(index === 0){
+    $("#prev").addClass("disabled");
+  } else {
+    $("#prev").removeClass("disabled");
+  }
+
+  // Next button
+  if(index === questions.length - 1){
+    $("#next").addClass("disabled");
+  } else {
+    $("#next").removeClass("disabled");
+  }
+
+  // Show submit only on last question
+  if(index === questions.length - 1){
+    $("#submit").show();
+  } else {
+    $("#submit").hide();
+  }
 }
 
 /* ---------------- NAVIGATION ---------------- */
@@ -187,16 +205,29 @@ $("#prev").click(function(){ navigate(-1); });
 /* ---------------- EXECUTE ---------------- */
 $("#execute").click(function(){
   let query = $("#user-query").val();
+
   $.ajax({
     url:"{{ url_for('run_sql') }}",
     type:"POST",
     contentType:"application/json",
     data: JSON.stringify({query: query}),
+
     success:function(res){
-      if(res.error){ alert(res.error); return; }
+      if(res.error){
+        $("#result-box").text("ERROR: " + res.error);
+        return;
+      }
+
       let output="";
-      res.output.forEach(row=>{ output += row.join(" | ") + "\n"; });
+      res.output.forEach(row=>{
+        output += row.join(" | ") + "\n";
+      });
+
       $("#result-box").text(output);
+    },
+
+    error:function(err){
+      $("#result-box").text("Server error");
     }
   });
 });
@@ -240,14 +271,11 @@ $("#submit").click(submitSQL);
 document.addEventListener("visibilitychange", function() {
     if (!examSubmitted && document.hidden) {
         alert("You switched tabs! Your assessment will be locked and score reset.");
-       fetch("{{ url_for('tab_switch') }}",{method:"POST"})
 
-        .then(()=>{
-
-            window.location="{{ url_for('dashboard') }}";
-
+        fetch("{{ url_for('tab_switch') }}", { method: "POST" })
+        .then(() => {
+            window.location = "{{ url_for('dashboard') }}";
         });
-});
     }
 });
 

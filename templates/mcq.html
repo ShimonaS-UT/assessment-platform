@@ -9,55 +9,52 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <style>
-
 body{
     background: linear-gradient(135deg,#f5f7fa,#e4ecf5);
     font-family:"Segoe UI", Arial, sans-serif;
 }
-
 .container{
     margin-top:40px;
 }
-
-/* assessment card */
 .assessment-card{
     padding:30px;
 }
-
-/* timer styling */
 #timer{
     font-size:20px;
     color:#db2828;
     font-weight:bold;
     margin-bottom:20px;
 }
-
-/* question spacing */
 #question-container{
     margin-top:20px;
 }
-
-/* options spacing */
 .option{
     display:block;
     margin:12px 0;
 }
-
-/* navigation buttons */
 .navigation{
     margin-top:30px;
     display:flex;
     justify-content:space-between;
 }
 
+/* ✅ STRONG OVERRIDE FIX */
+#prev.active-btn, #next.active-btn {
+    background-color: #2185d0 !important;
+    color: #fff !important;
+}
+
+#prev.disabled-btn, #next.disabled-btn {
+    background-color: #d4d4d5 !important;
+    color: #888 !important;
+    pointer-events: none;
+}
 </style>
 
 </head>
-
 <body>
 
 <div class="ui container">
-
 <div class="ui raised segment assessment-card">
 
 <h2 class="ui header">
@@ -68,109 +65,89 @@ MCQ Assessment
 </div>
 </h2>
 
+<!-- Timer -->
+
 <div id="timer"></div>
 
-<div id="question-container"></div>
+<!-- Instructions -->
 
-<div class="navigation">
+<div id="instructions" class="ui info message">
+  <div class="header">Assessment Instructions</div>
+  <ul>
+    <li>Total Questions: <b id="totalQ"></b></li>
+    <li>Time Duration: <b id="totalTime"></b> seconds</li>
+    <li>Marks per Question: <b>5</b></li>
+  </ul>
+  <button id="startExam" class="ui green button">Start Assessment</button>
+</div>
 
-<button id="prev" class="ui button">
-<i class="arrow left icon"></i>
-Previous
-</button>
+<!-- Questions -->
 
-<button id="next" class="ui primary button">
-Next
-<i class="arrow right icon"></i>
-</button>
+<div id="question-container" style="display:none;"></div>
 
-<button id="submit" class="ui red button">
-<i class="check icon"></i>
-Submit
-</button>
+<!-- Navigation -->
 
+<div class="navigation" style="display:none;" id="navButtons">
+    <button id="prev" class="ui button">
+        <i class="arrow left icon"></i> Previous
+    </button>
+    <button id="next" class="ui button">
+        Next <i class="arrow right icon"></i>
+    </button>
+    <button id="submit" class="ui red button">
+        <i class="check icon"></i> Submit
+    </button>
 </div>
 
 </div>
-
 </div>
 
 <script>
-
 let questions = {{ questions|tojson }};
 let saved_answers = {{ saved_answers|tojson }};
 let current = 0;
 let time = 60;
 let examSubmitted = false;
 
-/* ---------------- TIMER ---------------- */
+// Setup
+document.getElementById("totalQ").innerText = questions.length;
+document.getElementById("totalTime").innerText = time;
 
+// TIMER
 function startTimer(){
-
     let timer = setInterval(function(){
-
         let minutes = Math.floor(time/60);
         let seconds = time % 60;
-
         document.getElementById("timer").innerHTML =
         "Time Left : " + minutes + ":" + (seconds<10?"0":"")+seconds;
-
         time--;
-
         if(time < 0){
-
             clearInterval(timer);
-
             submitTest();
-
         }
-
     },1000);
-
 }
 
-startTimer();
-
-/* ---------------- AUTO SAVE ---------------- */
-
+// SAVE ANSWER
 function saveAnswer(qid,value){
-
     saved_answers[qid] = value;
-
     $.ajax({
-
         url:"{{ url_for('save_mcq') }}",
-
         type:"POST",
-
         contentType:"application/json",
-
-        data:JSON.stringify({[qid]:value}),
-
-        success:function(){
-
-            console.log("Answer saved for question " + qid);
-
-        }
-
+        data:JSON.stringify({[qid]:value})
     });
-
 }
 
-/* ---------------- SHOW QUESTION ---------------- */
-
+// SHOW QUESTION
 function showQuestion(index){
-
     let q = questions[index];
 
     let html = `<h3>Q${index+1}: ${q.question}</h3>`;
-
     html += `<div class="ui form">`;
 
     q.options.forEach(opt=>{
-
         let checked = saved_answers[q.id] == opt ? "checked" : "";
-
         html += `
         <div class="field option">
             <div class="ui radio checkbox">
@@ -178,121 +155,113 @@ function showQuestion(index){
                 <label>${opt}</label>
             </div>
         </div>`;
-
     });
 
     html += `</div>`;
-
     $("#question-container").html(html);
 
     $('.ui.radio.checkbox').checkbox();
 
     $('input[type=radio]').off('change').on('change',function(){
-
         saveAnswer(q.id,$(this).val());
-
     });
 
-    $("#prev").toggle(index > 0);
+    // ✅ BUTTON LOGIC FIXED
 
-    $("#next").toggle(index < questions.length - 1);
+    $("#prev").removeClass("disabled-btn active-btn");
+    $("#next").removeClass("disabled-btn active-btn");
 
-    $("#submit").toggle(index === questions.length - 1);
+    if(index === 0){
+        $("#prev").addClass("disabled-btn");
+        $("#next").addClass("active-btn");
+    }
+    else if(index === questions.length - 1){
+        $("#prev").addClass("active-btn");
+        $("#next").addClass("disabled-btn");
+    }
+    else{
+        $("#prev").addClass("active-btn");
+        $("#next").addClass("active-btn");
+    }
 
+    // Submit button
+    if(index === questions.length - 1){
+        $("#submit").show();
+    } else {
+        $("#submit").hide();
+    }
 }
 
-/* ---------------- NAVIGATION ---------------- */
-
+// NAVIGATION
 function navigate(offset){
-
     let q = questions[current];
-
     let selected = $(`input[name=q${q.id}]:checked`).val();
-
     if(selected) saveAnswer(q.id,selected);
 
     current += offset;
 
     if(current < 0) current = 0;
-
     if(current >= questions.length) current = questions.length - 1;
 
     showQuestion(current);
-
 }
 
-$("#next").click(function(){ navigate(1); });
+// Prevent click if disabled
+$("#next").click(function(){
+    if($(this).hasClass("disabled-btn")) return;
+    navigate(1);
+});
 
-$("#prev").click(function(){ navigate(-1); });
+$("#prev").click(function(){
+    if($(this).hasClass("disabled-btn")) return;
+    navigate(-1);
+});
 
-/* ---------------- SUBMIT ---------------- */
-
+// SUBMIT
 function submitTest(){
-
     examSubmitted = true;
 
     let q = questions[current];
-
     let selected = $(`input[name=q${q.id}]:checked`).val();
-
     if(selected) saveAnswer(q.id,selected);
 
     $.ajax({
-
         url:"{{ url_for('submit_mcq') }}",
-
         type:"POST",
-
         contentType:"application/json",
-
         data:JSON.stringify(saved_answers),
-
-        success:function(res){
-
+        success:function(){
             alert("MCQ Submitted!");
-
             window.location="{{ url_for('dashboard') }}";
-
         },
-
         error:function(){
-
-            alert("Error submitting MCQ. Redirecting to dashboard.");
-
+            alert("Error submitting MCQ.");
             window.location="{{ url_for('dashboard') }}";
-
         }
-
     });
-
 }
 
 $("#submit").click(submitTest);
 
-/* ---------------- TAB SWITCH DETECTION ---------------- */
-
+// TAB SWITCH
 document.addEventListener("visibilitychange",function(){
-
     if(!examSubmitted && document.hidden){
-
-        alert("You switched tabs! Your assessment will be locked and score reset.");
-
+        alert("You switched tabs! Assessment locked.");
         fetch("{{ url_for('tab_switch') }}",{method:"POST"})
-
         .then(()=>{
-
             window.location="{{ url_for('dashboard') }}";
-
         });
-
     }
-
 });
 
-/* ---------------- INITIAL LOAD ---------------- */
-
-showQuestion(current);
-
+// START
+$("#startExam").click(function(){
+    $("#instructions").hide();
+    $("#question-container").show();
+    $("#navButtons").show();
+    startTimer();
+    showQuestion(current);
+});
 </script>
 
 </body>

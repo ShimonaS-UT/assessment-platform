@@ -202,6 +202,33 @@ def login():
             return redirect(url_for('dashboard'))
 
     return render_template('login.html')
+
+@app.route("/forgot_password", methods=["GET", "POST"])
+def forgot_password():
+
+    if request.method == "POST":
+        username = request.form["username"]
+        new_password = request.form["password"]
+
+        conn = get_db_connection()
+        cur = conn.cursor()
+
+        cur.execute("SELECT * FROM users WHERE username=?", (username,))
+        user = cur.fetchone()
+
+        if not user:
+            flash("Email not registered", "error")
+            conn.close()
+            return redirect(url_for("forgot_password"))
+
+        cur.execute("UPDATE users SET password=? WHERE username=?", (new_password, username))
+        conn.commit()
+        conn.close()
+
+        flash("Password updated successfully! Please login.", "success")
+        return redirect(url_for("login"))
+
+    return render_template("forgot_password.html")
 # -----------------------
 # SIGNUP
 # -----------------------
@@ -217,8 +244,14 @@ def signup():
 
         username = request.form["username"]
         password = request.form["password"]
+        confirm_password = request.form["confirm_password"]
 
-        # ✅ Validate email format
+        # ✅ Check passwords match
+        if password != confirm_password:
+            flash("Passwords do not match", "error")
+            return redirect(url_for("signup"))
+
+        # ✅ Validate email
         if not re.match(EMAIL_REGEX, username):
             flash("Please enter a valid email address", "error")
             return redirect(url_for("signup"))
@@ -384,7 +417,7 @@ def save_mcq():
     answers = request.json
 
     session["mcq_answers"] = answers
-
+    session.modified = True
     return jsonify({"status":"saved"})
 
 
@@ -477,7 +510,10 @@ def run_sql():
     try:
         cur.execute(query)
         rows = cur.fetchall()
-        return jsonify({"output": rows})
+        return jsonify({
+            "output": rows,
+            "columns": [desc[0] for desc in cur.description]
+        })
 
     except Exception as e:
         return jsonify({"error": str(e)})
@@ -489,9 +525,9 @@ def save_sql_answer():
 
     saved = session.get("sql_answers", {})
 
-    saved[str(data["id"])] = data["query"]
-
+    saved[str(data["id"])] = data.get("query", "")
     session["sql_answers"] = saved
+    session.modified = True
 
     return jsonify({"status": "saved"})
 @app.route("/submit_sql", methods=["POST"])
@@ -594,7 +630,7 @@ def save_code():
     saved[str(data["id"])] = data["code"]
 
     session["coding_answers"] = saved
-
+    session.modified = True
     return jsonify({"status": "saved"})
 
 @app.route("/submit_coding", methods=["POST"])
@@ -607,8 +643,8 @@ def submit_coding():
     INSERT INTO progress(user_id,assessment_type,attempts,completed,score)
     VALUES(?,?,1,0,0)
     ON CONFLICT(user_id,assessment_type)
-    DO UPDATE SET attempts=attempts+1,
-    """,(session["user_id"],"coding"))
+    DO UPDATE SET attempts=attempts+1
+    """, (session["user_id"], "coding"))
 
     conn.commit()
     conn.close()
@@ -821,42 +857,17 @@ if __name__ == "__main__":
     conn = get_db_connection()
     cur = conn.cursor()
 
-    cur.execute("SELECT * FROM users WHERE username='admin'")
+    cur.execute("SELECT * FROM users WHERE username='admin@xyz.com'")
 
     if not cur.fetchone():
-
         cur.execute("INSERT INTO users(username,password,role) VALUES(?,?,?)",
-                    ("admin","admin123","admin"))
-
+                    ("admin@xyz.com", "admin123", "admin"))
         admin_id = cur.lastrowid
-
-        cur.execute("INSERT INTO assignments(user_id) VALUES(?)",(admin_id,))
-
+        cur.execute("INSERT INTO assignments(user_id) VALUES(?)", (admin_id,))
         print("Admin created")
 
     conn.commit()
     conn.close()
 
-    import os
-
-    if __name__ == "__main__":
-
-        init_db()
-
-        conn = get_db_connection()
-        cur = conn.cursor()
-
-        cur.execute("SELECT * FROM users WHERE username='admin@xyz.com'")
-
-        if not cur.fetchone():
-            cur.execute("INSERT INTO users(username,password,role) VALUES(?,?,?)",
-                        ("admin@xyz.com", "admin123", "admin"))
-            admin_id = cur.lastrowid
-            cur.execute("INSERT INTO assignments(user_id) VALUES(?)", (admin_id,))
-            print("Admin created")
-
-        conn.commit()
-        conn.close()
-
-        port = int(os.environ.get("PORT", 5000))
-        app.run(host="0.0.0.0", port=port, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
